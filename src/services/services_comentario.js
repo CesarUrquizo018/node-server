@@ -24,7 +24,15 @@ const comentarioService = {
 
     createComentario: async (data) => {
         try {
-            return await Comentario.create(data);
+            const nuevoComentario = await Comentario.create(data);
+    
+            // Recuperar el comentario con la información del usuario
+            const comentarioConUsuario = await Comentario.findOne({
+                where: { id_comentario: nuevoComentario.id_comentario },
+                include: [{ model: Usuario, attributes: ['nombre'] }],
+            });
+    
+            return comentarioConUsuario;
         } catch (error) {
             throw new Error('Error al crear el comentario');
         }
